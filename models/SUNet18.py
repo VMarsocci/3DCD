@@ -70,7 +70,7 @@ class SUNet18(nn.Module):
         self.finalconv22 = nn.Conv2d(32, 32, 3, padding=1)
         self.finalrelu22 = nonlinearity
         # self.finalconv23 = nn.Conv2d(32, 1, 2, stride = 2, padding=0)
-        self.finalconv23 = nn.Conv2d(32, 1, kernel_size= 3, stride = 1, padding=1) #kernel= 2cambiare stride in 2 e pudding=0!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        self.finalconv23 = nn.Conv2d(32, 1, kernel_size= 3, stride = 1, padding=1)
         self.finalnonlin2 = last_activation(last_layer)
 
     def forward(self, t1, t2):
