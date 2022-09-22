@@ -89,7 +89,7 @@ python train.py --config="your_config_file"
 ## Results
 In this section we briefly show the results obtained. First, we compared our models with other models available in the literature. 
 
-|    Architecture  |   F1 (%)  |  mIoU (%) | RMSE (m) | cRMSE (m) |
+|    Architecture  |   F1 (%)  |   IoU (%) | RMSE (m) | cRMSE (m) |
 |:----------------:|:---------:|:---------:|:--------:|:---------:|
 |   ChangeFormer   |   42.89   |   27.30   |   1.31   |    7.09   |
 |       FC-EF      |   46.32   |   30.14   |   1.41   |    7.04   |
@@ -105,7 +105,7 @@ In this section we briefly show the results obtained. First, we compared our mod
 
 Next, we show how the results vary when the 2D loss (α) and 3D loss (β) weights are changed.
 
-| Architecture | α | β | F1 (%) | mIoU (%) | RMSE (m) | cRMSE (m) |
+| Architecture | α | β | F1 (%) |  IoU (%) | RMSE (m) | cRMSE (m) |
 |:------------:|:-:|:-:|:------:|:--------:|:--------:|:---------:|
 |     MTBIT    | 0 | 1 |  5.76  |   2.98   |   1.24   |    6.93   |
 |     MTBIT    | 1 | 0 |  19.40 |   10.74  |   5.37   |   80.02   |
