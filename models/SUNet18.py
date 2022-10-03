@@ -4,14 +4,14 @@ import torch.nn.functional as F
 from functools import partial
 from torchvision import models
 
-from .help_funcs import
+from .help_funcs import *
 
 class SUNet18(nn.Module):
     def __init__(self, in_ch, out_ch,
         nonlinearity =  partial(F.relu, inplace=True),
-        base_model = models.resnet18(pretrained = True),
+        resnet = models.resnet18(pretrained = True),
         share_encoder = False,
-        base_model2 = models.resnet18(pretrained = True),
+        resnet2 = models.resnet18(pretrained = True),
         last_layer = 'tanh',
         ):
 
@@ -22,34 +22,18 @@ class SUNet18(nn.Module):
 
         C = [32, 64, 128, 256, 512, 1024]
 
-        resnet1 = base_model
+        resnet1 = resnet
 
         # Encoder first (and second) image
-        self.firstconv1 = resnet1.conv1
-        self.firstbn1 = resnet1.bn1
-        self.firstrelu1 = resnet1.relu
-        self.firstmaxpool1 = resnet1.maxpool
+        self.firstconv = resnet.conv1
+        self.firstbn = resnet.bn1
+        self.firstrelu = resnet.relu
+        self.firstmaxpool = resnet.maxpool
 
-        self.encoder11 = resnet1.layer1
-        self.encoder12 = resnet1.layer2
-        self.encoder13 = resnet1.layer3
-        self.encoder14 = resnet1.layer4
-
-        if share_encoder:
-          pass
-        else:
-          resnet2 = base_model2
-
-          # Encoder second image
-          self.firstconv2 = resnet2.conv1
-          self.firstbn2 = resnet2.bn1
-          self.firstrelu2 = resnet2.relu
-          self.firstmaxpool2 = resnet2.maxpool
-
-          self.encoder21 = resnet2.layer1
-          self.encoder22 = resnet2.layer2
-          self.encoder23 = resnet2.layer3
-          self.encoder24 = resnet2.layer4
+        self.encoder1 = resnet.layer1
+        self.encoder2 = resnet.layer2
+        self.encoder3 = resnet.layer3
+        self.encoder4 = resnet.layer4
         
         # Decoder
         self.conv5d = DecBlock(C[4], C[4], C[3])
@@ -70,83 +54,58 @@ class SUNet18(nn.Module):
         self.finalconv22 = nn.Conv2d(32, 32, 3, padding=1)
         self.finalrelu22 = nonlinearity
         # self.finalconv23 = nn.Conv2d(32, 1, 2, stride = 2, padding=0)
-        self.finalconv23 = nn.Conv2d(32, 1, kernel_size= 3, stride = 1, padding=1)
+        self.finalconv23 = nn.Conv2d(32, 1, kernel_size= 3, stride = 1, padding=1) #kernel= 2cambiare stride in 2 e pad 0
         self.finalnonlin2 = last_activation(last_layer)
 
     def forward(self, t1, t2):
         #Encode branch 1
         # Stage 1
-        x11 = self.firstconv1(t1)
-        x11 = self.firstbn1(x11)
-        x11 = self.firstrelu1(x11)
+        x11 = self.firstconv(t1)
+        x11 = self.firstbn(x11)
+        x11 = self.firstrelu(x11)
 
-        xp11 = self.firstmaxpool1(x11) 
+        xp11 = self.firstmaxpool(x11) 
 
         # Stage 2
-        xp12 = self.encoder11(xp11)
+        xp12 = self.encoder1(xp11)
         skip12 = xp12
 
         # Stage 3
-        xp13 = self.encoder12(xp12)
+        xp13 = self.encoder2(xp12)
         skip13 = xp13
 
         # Stage 4
-        xp14 = self.encoder13(xp13)
+        xp14 = self.encoder3(xp13)
         skip14 = xp14
 
         # Stage 5
-        xp15 = self.encoder14(xp14)
+        xp15 = self.encoder4(xp14)
         skip15 = xp15
 
         # Encode branch 2
-        if self.share_encoder:
-           # Stage 1
-          x21 = self.firstconv1(t2)
-          x21 = self.firstbn1(x21)
-          x21 = self.firstrelu1(x21)
+        # Stage 1
+        x21 = self.firstconv(t2)
+        x21 = self.firstbn(x21)
+        x21 = self.firstrelu(x21)
 
-          xp21 = self.firstmaxpool1(x21) 
+        xp21 = self.firstmaxpool(x21) 
 
-          #Stage 2
-          xp22 = self.encoder11(xp21)
-          skip22 = xp22
+        #Stage 2
+        xp22 = self.encoder1(xp21)
+        skip22 = xp22
 
-          # Stage 3
-          xp23 = self.encoder12(xp22)
-          skip23 = xp23
+        # Stage 3
+        xp23 = self.encoder2(xp22)
+        skip23 = xp23
 
-          # Stage 4
-          xp24 = self.encoder13(xp23)
-          skip24 = xp24
+        # Stage 4
+        xp24 = self.encoder3(xp23)
+        skip24 = xp24
 
-          # Stage 5
-          xp25 = self.encoder14(xp24)
-          skip25 = xp25
-
-        else:
-           # Stage 1
-          x21 = self.firstconv2(t2)
-          x21 = self.firstbn2(x21)
-          x21 = self.firstrelu2(x21)
-
-          xp21 = self.firstmaxpool2(x21) 
-
-          #Stage 2
-          xp22 = self.encoder21(xp21)
-          skip22 = xp22
-
-          # Stage 3
-          xp23 = self.encoder22(xp22)
-          skip23 = xp23
-
-          # Stage 4
-          xp24 = self.encoder23(xp23)
-          skip24 = xp24
-
-          # Stage 5
-          xp25 = self.encoder24(xp24)
-          skip25 = xp25
-
+        # Stage 5
+        xp25 = self.encoder4(xp24)
+        skip25 = xp25
+        
         # Decode
         # Stage 5d
         xd = self.conv5d(xp15, xp25)  
