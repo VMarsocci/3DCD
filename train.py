@@ -111,21 +111,21 @@ else:
 valid_transform = get_validation_augmentations(m = mean, s = std)
 
 train_dataset = Dataset(x_train_dir,
-                        resize = resize, 
-                        size = size,
-                        scale_factor = scale_factor,
+                        #resize = resize, 
+                        #size = size,
+                        #scale_factor = scale_factor,
                         augmentation = train_transform)
 
 valid_dataset = Dataset(x_valid_dir,
-                        resize = resize, 
-                        size = size,
-                        scale_factor = scale_factor,
+                        #resize = resize, 
+                        #size = size,
+                        #scale_factor = scale_factor,
                         augmentation = valid_transform)
                         
 test_dataset = Dataset(x_test_dir,
-                        resize = resize, 
-                        size = size,
-                        scale_factor = scale_factor,
+                        #resize = resize, 
+                        #size = size,
+                        #scale_factor = scale_factor,
                         augmentation = valid_transform)
 
 
