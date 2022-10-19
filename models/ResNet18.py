@@ -4,7 +4,7 @@ import torch.nn.functional as F
 from functools import partial
 from torchvision import models
 
-from .help_funcs import
+from .help_funcs import *
 
 class ResNet18(nn.Module):
     def __init__(self, in_ch, out_ch,
