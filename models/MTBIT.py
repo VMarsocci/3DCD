@@ -25,10 +25,6 @@ class ResNet(torch.nn.Module):
         if backbone == 'resnet18':
             self.resnet = rn.resnet18(pretrained=True,
                                           replace_stride_with_dilation=[False,True,True])
-           
-        elif backbone == 'resnet34':
-            self.resnet = rn.resnet34(pretrained=True,
-                                          replace_stride_with_dilation=[False,True,True])
         elif backbone == 'resnet50':
             self.resnet = rn.resnet50(pretrained=True,
                                           replace_stride_with_dilation=[False,True,True])
@@ -124,11 +120,11 @@ class MTBIT(ResNet):
                  token_len=4, token_trans=True,
                  enc_depth=1, dec_depth=1,
                  dim_head=64, decoder_dim_head=64,
-                 tokenizer=True, if_upsample_2x=True,
+                 if_upsample_2x=True,
                  pool_mode='max', pool_size=2,
                  backbone='resnet18', learnable = False,
-                 decoder_softmax=True, with_decoder_pos=None,
-                 with_decoder=True):
+                 decoder_softmax=True, with_decoder_pos=None
+                ):
                      
         super(MTBIT, self).__init__(input_nc, output_nc,backbone=backbone,
                                              resnet_stages_num=resnet_stages_num,
@@ -137,17 +133,12 @@ class MTBIT(ResNet):
         self.token_len = token_len
         self.conv_a = nn.Conv2d(32, self.token_len, kernel_size=1,
                                 padding=0, bias=False)
-        self.tokenizer = tokenizer
         self.learnable = learnable 
-        
-        if not self.tokenizer:
-            #  if not use tokenzierÃ¯Â¼Å’then downsample the feature map into a certain size
-            self.pooling_size = pool_size
-            self.pool_mode = pool_mode
-            self.token_len = self.pooling_size * self.pooling_size
+        self.pooling_size = pool_size
+        self.pool_mode = pool_mode
+        self.token_len = self.pooling_size * self.pooling_size
 
         self.token_trans = token_trans
-        self.with_decoder = with_decoder
         dim = 32
         mlp_dim = 2*dim
 
@@ -224,26 +215,19 @@ class MTBIT(ResNet):
         x2 = self.forward_single(x2)
 
         #  forward tokenzier
-        if self.tokenizer:
-            token1 = self._forward_semantic_tokens(x1)
-            token2 = self._forward_semantic_tokens(x2)
-        else:
-            token1 = self._forward_reshape_tokens(x1)
-            token2 = self._forward_reshape_tokens(x2)
+        token1 = self._forward_semantic_tokens(x1)
+        token2 = self._forward_semantic_tokens(x2)
+
         # forward transformer encoder
         if self.token_trans:
             self.tokens_ = torch.cat([token1, token2], dim=1)
             self.tokens = self._forward_transformer(self.tokens_)
             token1, token2 = self.tokens.chunk(2, dim=1)
         # forward transformer decoder
-        if self.with_decoder:
-            x1 = self._forward_transformer_decoder(x1, token1)
-            x2 = self._forward_transformer_decoder(x2, token2)
-        else:
-            x1 = self._forward_simple_decoder(x1, token1)
-            x2 = self._forward_simple_decoder(x2, token2)
+        x1 = self._forward_transformer_decoder(x1, token1)
+        x2 = self._forward_transformer_decoder(x2, token2)
         # feature differencing
-        x = torch.abs(x1 - x2) #modificabile
+        x = torch.abs(x1 - x2) #abs value taken
         
         if not self.if_upsample_2x:
             if self.learnable:
