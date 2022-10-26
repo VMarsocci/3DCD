@@ -121,7 +121,6 @@ class MTBIT(ResNet):
                  enc_depth=1, dec_depth=1,
                  dim_head=64, decoder_dim_head=64,
                  if_upsample_2x=True,
-                 pool_mode='max', pool_size=2,
                  backbone='resnet18', learnable = False,
                  decoder_softmax=True, with_decoder_pos=None
                 ):
@@ -134,10 +133,6 @@ class MTBIT(ResNet):
         self.conv_a = nn.Conv2d(32, self.token_len, kernel_size=1,
                                 padding=0, bias=False)
         self.learnable = learnable 
-        self.pooling_size = pool_size
-        self.pool_mode = pool_mode
-        self.token_len = self.pooling_size * self.pooling_size
-
         self.token_trans = token_trans
         dim = 32
         mlp_dim = 2*dim
@@ -172,17 +167,6 @@ class MTBIT(ResNet):
 
         return tokens
 
-    def _forward_reshape_tokens(self, x):
-        # b,c,h,w = x.shape
-        if self.pool_mode is 'max':
-            x = F.adaptive_max_pool2d(x, [self.pooling_size, self.pooling_size])
-        elif self.pool_mode is 'ave':
-            x = F.adaptive_avg_pool2d(x, [self.pooling_size, self.pooling_size])
-        else:
-            x = x
-        tokens = rearrange(x, 'b c h w -> b (h w) c')
-        return tokens
-
     def _forward_transformer(self, x):
         if self.with_pos:
             x += self.pos_embedding
@@ -198,15 +182,6 @@ class MTBIT(ResNet):
         x = rearrange(x, 'b c h w -> b (h w) c')
         x = self.transformer_decoder(x, m)
         x = rearrange(x, 'b (h w) c -> b c h w', h=h)
-        return x
-
-    def _forward_simple_decoder(self, x, m):
-        b, c, h, w = x.shape
-        b, l, c = m.shape
-        m = m.expand([h,w,b,l,c])
-        m = rearrange(m, 'h w b l c -> l b c h w')
-        m = m.sum(0)
-        x = x + m
         return x
 
     def forward(self, x1, x2):
