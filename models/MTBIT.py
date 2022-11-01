@@ -116,13 +116,10 @@ class ResNet(torch.nn.Module):
 
 
 class MTBIT(ResNet):
-    def __init__(self, input_nc, output_nc, with_pos, resnet_stages_num=5,
-                 token_len=4, token_trans=True,
-                 enc_depth=1, dec_depth=1,
-                 dim_head=64, decoder_dim_head=64,
-                 if_upsample_2x=True,
-                 backbone='resnet18', learnable = False,
-                 decoder_softmax=True, with_decoder_pos=None
+    def __init__(self, input_nc, output_nc, resnet_stages_num=5,
+                 token_len=4, enc_depth=1, dec_depth=1,
+                 dim_head=64, decoder_dim_head=64,if_upsample_2x=True,
+                 backbone='resnet18', learnable = False, decoder_softmax=True,
                 ):
                      
         super(MTBIT, self).__init__(input_nc, output_nc,backbone=backbone,
@@ -133,19 +130,14 @@ class MTBIT(ResNet):
         self.conv_a = nn.Conv2d(32, self.token_len, kernel_size=1,
                                 padding=0, bias=False)
         self.learnable = learnable 
-        self.token_trans = token_trans
         dim = 32
         mlp_dim = 2*dim
 
-        self.with_pos = with_pos
-        if with_pos is 'learned':
-            self.pos_embedding = nn.Parameter(torch.randn(1, self.token_len*2, 32))
+        self.pos_embedding = nn.Parameter(torch.randn(1, self.token_len*2, 32))
         decoder_pos_size = 256//4
-        self.with_decoder_pos = with_decoder_pos
-        if self.with_decoder_pos == 'learned':
-            self.pos_embedding_decoder =nn.Parameter(torch.randn(1, 32,
-                                                                 decoder_pos_size,
-                                                                 decoder_pos_size))
+        self.pos_embedding_decoder =nn.Parameter(torch.randn(1, 32,
+                                                              decoder_pos_size,
+                                                              decoder_pos_size))
         self.enc_depth = enc_depth
         self.dec_depth = dec_depth
         self.dim_head = dim_head
@@ -164,21 +156,16 @@ class MTBIT(ResNet):
         spatial_attention = torch.softmax(spatial_attention, dim=-1)
         x = x.view([b, c, -1]).contiguous()
         tokens = torch.einsum('bln,bcn->blc', spatial_attention, x)
-
         return tokens
 
     def _forward_transformer(self, x):
-        if self.with_pos:
-            x += self.pos_embedding
+        x += self.pos_embedding
         x = self.transformer(x)
         return x
 
     def _forward_transformer_decoder(self, x, m):
         b, c, h, w = x.shape
-        if self.with_decoder_pos == 'fix':
-            x = x + self.pos_embedding_decoder
-        elif self.with_decoder_pos == 'learned':
-            x = x + self.pos_embedding_decoder
+        x = x + self.pos_embedding_decoder
         x = rearrange(x, 'b c h w -> b (h w) c')
         x = self.transformer_decoder(x, m)
         x = rearrange(x, 'b (h w) c -> b c h w', h=h)
@@ -194,15 +181,14 @@ class MTBIT(ResNet):
         token2 = self._forward_semantic_tokens(x2)
 
         # forward transformer encoder
-        if self.token_trans:
-            self.tokens_ = torch.cat([token1, token2], dim=1)
-            self.tokens = self._forward_transformer(self.tokens_)
-            token1, token2 = self.tokens.chunk(2, dim=1)
+        self.tokens_ = torch.cat([token1, token2], dim=1)
+        self.tokens = self._forward_transformer(self.tokens_)
+        token1, token2 = self.tokens.chunk(2, dim=1)
         # forward transformer decoder
         x1 = self._forward_transformer_decoder(x1, token1)
         x2 = self._forward_transformer_decoder(x2, token2)
         # feature differencing
-        x = torch.abs(x1 - x2) #abs value taken
+        x = x2 - x1
         
         if not self.if_upsample_2x:
             if self.learnable:

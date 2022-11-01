@@ -93,9 +93,6 @@ lweight2d, lweight3d = exp_config['model']['loss_weights']
 weights2d = exp_config['model']['2d_loss_weights']
 
 augmentation = exp_config['data']['augmentations']
-# resize = exp_config['data']['resize_strategy']
-# size = exp_config['data']['size']
-# scale_factor = exp_config['data']['scale_factor']
 
 min_scale = exp_config['data']['min_value']
 max_scale = exp_config['data']['max_value']
@@ -111,21 +108,12 @@ else:
 valid_transform = get_validation_augmentations(m = mean, s = std)
 
 train_dataset = Dataset(x_train_dir,
-                        #resize = resize, 
-                        #size = size,
-                        #scale_factor = scale_factor,
                         augmentation = train_transform)
 
 valid_dataset = Dataset(x_valid_dir,
-                        #resize = resize, 
-                        #size = size,
-                        #scale_factor = scale_factor,
                         augmentation = valid_transform)
                         
 test_dataset = Dataset(x_test_dir,
-                        #resize = resize, 
-                        #size = size,
-                        #scale_factor = scale_factor,
                         augmentation = valid_transform)
 
 
@@ -139,7 +127,7 @@ criterion3d = choose_criterion3d(name = name_3dloss)
 
 class_weights2d = torch.FloatTensor(weights2d).to(device)
 name_2dloss = exp_config['model']['2d_loss'] 
-criterion2d = choose_criterion2d(name_2dloss, class_weights2d) #, class_ignored)
+criterion2d = choose_criterion2d(name_2dloss, class_weights2d)
 
 nepochs = exp_config['optim']['num_epochs']
 lr = exp_config['optim']['lr']
@@ -164,11 +152,11 @@ elif model == "SiamUnet_conc":
 elif model == "Unet":
 	net = Unet(3,2).to(device)
 elif model == 'mtbit_resnet18':
-  net = MTBIT(input_nc=3, output_nc=2, token_len=4, resnet_stages_num=4, if_upsample_2x=False,
-              with_pos='learned', enc_depth=1, dec_depth=8, decoder_dim_head=8).to(device)
+  net = MTBIT(input_nc=3, output_nc=2, token_len=4, resnet_stages_num=4, if_upsample_2x=True,
+              enc_depth=1, dec_depth=8, decoder_dim_head=8).to(device)
 elif model == 'mtbit_resnet50':
   net = MTBIT(input_nc=3, output_nc=2, token_len=4, resnet_stages_num=4, if_upsample_2x=True,
-              with_pos='learned', enc_depth=1, dec_depth=8, decoder_dim_head=16, backbone = 'resnet50').to(device)
+              enc_depth=1, dec_depth=8, decoder_dim_head=16, backbone = 'resnet50').to(device)
 else:
 	print('Model not implemented yet')
 
