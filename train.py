@@ -153,7 +153,7 @@ elif model == "Unet":
 	net = Unet(3,2).to(device)
 elif model == 'mtbit_resnet18':
   net = MTBIT(input_nc=3, output_nc=2, token_len=4, resnet_stages_num=4, if_upsample_2x=True,
-              enc_depth=1, dec_depth=8, decoder_dim_head=8).to(device)
+              enc_depth=1, dec_depth=8, decoder_dim_head=16).to(device)
 elif model == 'mtbit_resnet50':
   net = MTBIT(input_nc=3, output_nc=2, token_len=4, resnet_stages_num=4, if_upsample_2x=True,
               enc_depth=1, dec_depth=8, decoder_dim_head=16, backbone = 'resnet50').to(device)
