@@ -117,7 +117,7 @@ class ResNet(torch.nn.Module):
 
 class MTBIT(ResNet):
     def __init__(self, input_nc, output_nc, resnet_stages_num=5,
-                 token_len=4, enc_depth=1, dec_depth=1,
+                 token_len=4, enc_depth=1, dec_depth=1, diff = True,
                  dim_head=64, decoder_dim_head=64,if_upsample_2x=True,
                  backbone='resnet18', learnable = False, decoder_softmax=True,
                 ):
@@ -148,6 +148,7 @@ class MTBIT(ResNet):
         self.transformer_decoder = TransformerDecoder(dim=dim, depth=self.dec_depth,
                             heads=8, dim_head=self.decoder_dim_head, mlp_dim=mlp_dim, dropout=0,
                                                       softmax=decoder_softmax)
+        self.diff = diff
 
     def _forward_semantic_tokens(self, x):
         b, c, h, w = x.shape
@@ -188,7 +189,10 @@ class MTBIT(ResNet):
         x1 = self._forward_transformer_decoder(x1, token1)
         x2 = self._forward_transformer_decoder(x2, token2)
         # feature differencing
-        x = x2 - x1
+        if self.diff:
+            x = x2 - x1
+        else:
+            x = torch.abs(x2-x1)
         
         if not self.if_upsample_2x:
             if self.learnable:
