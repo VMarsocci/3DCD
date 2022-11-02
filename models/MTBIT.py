@@ -125,7 +125,7 @@ class MTBIT(ResNet):
         super(MTBIT, self).__init__(input_nc, output_nc,backbone=backbone,
                                              resnet_stages_num=resnet_stages_num,
                                                if_upsample_2x=if_upsample_2x, 
-                                               learnable = learnable,)
+                                               learnable = learnable, diff = diff)
         self.token_len = token_len
         self.conv_a = nn.Conv2d(32, self.token_len, kernel_size=1,
                                 padding=0, bias=False)
