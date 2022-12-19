@@ -95,29 +95,19 @@ In this section we briefly show the results obtained. First, we compared our mod
 
 |    Architecture  |   F1 (%)  |   IoU (%) | RMSE (m) | cRMSE (m) |
 |:----------------:|:---------:|:---------:|:--------:|:---------:|
-|   ChangeFormer   |   42.89   |   27.30   |   1.31   |    7.09   |
-|       FC-EF      |   46.32   |   30.14   |   1.41   |    7.04   |
-|   FC-Siam-conc   |   38.30   |   23.69   |   1.42   |   10.66   |
-|       SUNet      |   59.72   |   42.57   |   1.24   |    6.47   |
-|     ResNet18     |    7.87   |    4.82   |   1.56   |    7.45   |
-|     IM2HEIGHT    |     -     |     -     |   1.57   |    7.59   |
-| **MTBIT (ours)** | **62.15** | **45.09** | **1.20** |  **6.46** |
+|   ChangeFormer   |   42.89   |   27.30   |   1.31   |    6.24   |
+|       FC-EF      |   46.32   |   30.14   |   1.41   |    6.74   |
+|   FC-Siam-conc   |   38.30   |   23.69   |   1.42   |    6.18   |
+|       SUNet      |   59.72   |   42.57   |   1.24   |    5.86   |
+|     ResNet18     |    7.87   |    4.82   |   1.56   |    7.26   |
+|     IM2HEIGHT    |     -     |     -     |   1.57   |    6.71   |
+| **MTBIT (ours)** | **62.15** | **45.09** | **1.20** |  **5.76** |
 
 <div align="center"><img src="images/comp.jpg", width="500"></div>
 
 <div align="center"><img src="images/isto.png", width="500"></div>
 
-Next, we show how the results vary when the 2D loss (α) and 3D loss (β) weights are changed.
 
-| Architecture | α | β | F1 (%) |  IoU (%) | RMSE (m) | cRMSE (m) |
-|:------------:|:-:|:-:|:------:|:--------:|:--------:|:---------:|
-|     MTBIT    | 0 | 1 |  5.76  |   2.98   |   1.24   |    6.93   |
-|     MTBIT    | 1 | 0 |  19.40 |   10.74  |   5.37   |   80.02   |
-|     MTBIT    | 1 | 1 |  62.03 |   44.96  |   1.22   |    6.75   |
-|     MTBIT    | 1 | 3 |  62.15 |   45.09  |   1.20   |    6.46   |
-|     MTBIT    | 3 | 1 |  62.77 |   45.74  |   1.21   |    6.80   |
-|     MTBIT    | 1 | 5 |  62.71 |   45.68  |   1.19   |    6.53   |
-|     MTBIT    | 5 | 1 |  63.65 |   46.68  |   1.24   |    6.83   |
 
 ## Related resources
 
