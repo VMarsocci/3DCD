@@ -228,8 +228,6 @@ mIoU = TP/(TP+FN+FP)
 RMSE1 = np.sqrt(rmse1/len(test_loader))
 RMSE2 = np.sqrt(rmse2/len(test_loader))
 
-end = time.time()
-print('Test completed. Program processed ', end - start, 's, ', (end - start)/60, 'min, ', (end - start)/3600, 'h')
 print(f'Test metrics - 2D: F1 Score -> {mean_f1*100} %; mIoU -> {mIoU*100} %; 3D: MAE -> {mean_mae} m; RMSE -> {RMSE1} m; cRMSE -> {RMSE2} m')
 stats = dict(epoch = 'Test', MeanAbsoluteError = mean_mae, RMSE = RMSE1, cRMSE = RMSE2, F1Score = mean_f1*100, mIoU = mIoU*100)
 print(json.dumps(stats), file=stats_file)
