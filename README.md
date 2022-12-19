@@ -91,7 +91,9 @@ python test.py --config="your_config_file"
 ```
 
 ## Results
-In this section we briefly show the results obtained. First, we compared our models with other models available in the literature. 
+In this section we briefly show the results obtained. We compared our models with other models available in the literature. 
+
+*WARNING*: if you use this code te reproduce MTBIT results, please consider these metrics w.r.t. the one in the paper, due to un update of the way of computing the cRMSE.
 
 |    Architecture  |   F1 (%)  |   IoU (%) | RMSE (m) | cRMSE (m) |
 |:----------------:|:---------:|:---------:|:--------:|:---------:|
@@ -113,7 +115,7 @@ In this section we briefly show the results obtained. First, we compared our mod
 
 In this section, we point out some useful repositories, resources and connected projects. 
 
-<!-- - [BIT Github repository](https://github.com/justchenhao/BIT_CD) -->
+- [BIT Github repository](https://github.com/justchenhao/BIT_CD) 
 - [Organismo Autonomo Centro Nacional de Informacion Geografica](http://centrodedescargas.cnig.es/CentroDescargas/buscadorCatalogo.do?codFamilia=LIDAR#)
 
 Reach us out if you would like to be inserted in this list.
