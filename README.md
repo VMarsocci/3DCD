@@ -85,6 +85,10 @@ To train the model, prepare a *.yaml* file and put in the ```config``` directory
 ```bash
 python train.py --config="your_config_file"
 ```
+To test your model, follow the same steps for training and then run the following command:
+```bash
+python test.py --config="your_config_file"
+```
 
 ## Results
 In this section we briefly show the results obtained. First, we compared our models with other models available in the literature. 
