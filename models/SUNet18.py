@@ -3,31 +3,33 @@ import torch.nn as nn
 import torch.nn.functional as F
 from functools import partial
 from torchvision import models
+import timm
 
 from .help_funcs import *
 
 class SUNet18(nn.Module):
     def __init__(self, in_ch, out_ch,
         nonlinearity =  partial(F.relu, inplace=True),
-        resnet = models.resnet18(pretrained = True),
+        resnet = None,
         share_encoder = False,
-        resnet2 = models.resnet18(pretrained = True),
+        # resnet2 = models.resnet18(pretrained = True),
         last_layer = 'tanh',
         ):
 
         super().__init__()
 
         self.name = 'SUNet'
-        self.share_encoder = share_encoder
+        # self.share_encoder = share_encoder
 
         C = [32, 64, 128, 256, 512, 1024]
 
-        resnet1 = resnet
+        # resnet1 = resnet
+        resnet = timm.create_model('resnet18', pretrained = True, in_chans = in_ch)
 
         # Encoder first (and second) image
         self.firstconv = resnet.conv1
         self.firstbn = resnet.bn1
-        self.firstrelu = resnet.relu
+        self.firstrelu = resnet.act1
         self.firstmaxpool = resnet.maxpool
 
         self.encoder1 = resnet.layer1
@@ -83,6 +85,7 @@ class SUNet18(nn.Module):
         skip15 = xp15
 
         # Encode branch 2
+
         # Stage 1
         x21 = self.firstconv(t2)
         x21 = self.firstbn(x21)
@@ -106,6 +109,79 @@ class SUNet18(nn.Module):
         xp25 = self.encoder4(xp24)
         skip25 = xp25
         
+        # #Encode branch 1
+        # # Stage 1
+        # x11 = self.firstconv1(t1)
+        # x11 = self.firstbn1(x11)
+        # x11 = self.firstrelu1(x11)
+
+        # xp11 = self.firstmaxpool1(x11) 
+
+        # # Stage 2
+        # xp12 = self.encoder11(xp11)
+        # skip12 = xp12
+
+        # # Stage 3
+        # xp13 = self.encoder12(xp12)
+        # skip13 = xp13
+
+        # # Stage 4
+        # xp14 = self.encoder13(xp13)
+        # skip14 = xp14
+
+        # # Stage 5
+        # xp15 = self.encoder14(xp14)
+        # skip15 = xp15
+
+        # # Encode branch 2
+        # if self.share_encoder:
+        #   # Stage 1
+        #   x21 = self.firstconv1(t2)
+        #   x21 = self.firstbn1(x21)
+        #   x21 = self.firstrelu1(x21)
+
+        #   xp21 = self.firstmaxpool1(x21) 
+
+        #   #Stage 2
+        #   xp22 = self.encoder11(xp21)
+        #   skip22 = xp22
+
+        #   # Stage 3
+        #   xp23 = self.encoder12(xp22)
+        #   skip23 = xp23
+
+        #   # Stage 4
+        #   xp24 = self.encoder13(xp23)
+        #   skip24 = xp24
+
+        #   # Stage 5
+        #   xp25 = self.encoder14(xp24)
+        #   skip25 = xp25
+
+        # else:
+        #   # Stage 1
+        #   x21 = self.firstconv2(t2)
+        #   x21 = self.firstbn2(x21)
+        #   x21 = self.firstrelu2(x21)
+
+        #   xp21 = self.firstmaxpool2(x21) 
+
+        #   #Stage 2
+        #   xp22 = self.encoder21(xp21)
+        #   skip22 = xp22
+
+        #   # Stage 3
+        #   xp23 = self.encoder22(xp22)
+        #   skip23 = xp23
+
+        #   # Stage 4
+        #   xp24 = self.encoder23(xp23)
+        #   skip24 = xp24
+
+        #   # Stage 5
+        #   xp25 = self.encoder24(xp24)
+        #   skip25 = xp25
+
         # Decode
         # Stage 5d
         xd = self.conv5d(xp15, xp25)  
