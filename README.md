@@ -125,14 +125,17 @@ If you found our work useful, consider citing these works:
 
 -[Inferring 3D change detection from bitemporal optical images](https://arxiv.org/abs/2205.15903)
 ```bash
-@misc{https://doi.org/10.48550/arxiv.2205.15903,
-  doi = {10.48550/ARXIV.2205.15903},
-  url = {https://arxiv.org/abs/2205.15903},
-  author = {Marsocci, Valerio and Coletta, Virginia and Ravanelli, Roberta and Scardapane, Simone and Crespi, Mattia},
-  title = {Inferring 3D change detection from bitemporal optical images},
-  publisher = {arXiv},
-  year = {2022},
-  copyright = {Creative Commons Attribution 4.0 International}
+@article{MARSOCCI2023325,
+title = {Inferring 3D change detection from bitemporal optical images},
+journal = {ISPRS Journal of Photogrammetry and Remote Sensing},
+volume = {196},
+pages = {325-339},
+year = {2023},
+issn = {0924-2716},
+doi = {https://doi.org/10.1016/j.isprsjprs.2022.12.009},
+url = {https://www.sciencedirect.com/science/article/pii/S0924271622003240},
+author = {Valerio Marsocci and Virginia Coletta and Roberta Ravanelli and Simone Scardapane and Mattia Crespi},
+keywords = {3D change detection, Remote sensing, Deep learning, Elevation change detection, Dataset},
 }
 ```
 
