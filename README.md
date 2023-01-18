@@ -4,8 +4,6 @@
   <img src="images/logo_3d_cd.png", width="250">
 </div>
 
-[ISPRS Journal of Photogrammetry and Remote Sensing paper](https://www.sciencedirect.com/science/article/pii/S0924271622003240) | [arXiv paper](https://arxiv.org/abs/2205.15903)
-
 **3DCD** project has the goal of automatically inferring *2D and 3D change detection (elevation change)* maps of human artefacts from bitemporal optical images, *without the need of relying on DSMs*.
 
 The project is carried out by Virginia Coletta, [Valerio Marsocci](https://sites.google.com/uniroma1.it/valeriomarsocci) and Dr. Roberta Ravanelli, under the supervision of professors Simone Scardapane and Mattia Crespi. 
@@ -14,6 +12,8 @@ For more information click on the site **[3DCD](https://sites.google.com/uniroma
 <div align="center">
   <img src="images/qr.png", width="250">
 </div>
+
+[ISPRS J. Photogramm ](https://www.sciencedirect.com/science/article/pii/S0924271622003240) | [arXiv paper](https://arxiv.org/abs/2205.15903)
 
 ## Contents
 1. [Features](#features)
