@@ -49,7 +49,7 @@ Main features of the data contained in the proposed dataset in the table below.
 |       2D CD maps      |        400x400       |  0.50 m |
 |       3D CD maps      |        200x200       |  1.0 m  |
 
-To use your costume dataset, please respect this structure (and remember to rename the subfolder "2010" and "2017" in the dataloader):
+To use your custom dataset, please respect this structure (and remember to rename the subfolder "2010" and "2017" in the dataloader):
 
 ```bash
 Custom dataset
