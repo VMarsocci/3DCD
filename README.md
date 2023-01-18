@@ -123,7 +123,7 @@ Reach us out if you would like to be inserted in this list.
 ## Citation
 If you found our work useful, consider citing these works:
 
--[Inferring 3D change detection from bitemporal optical images](https://www.sciencedirect.com/science/article/pii/S0924271622003240) ([arXiv version](https://arxiv.org/abs/2205.15903)
+-[Inferring 3D change detection from bitemporal optical images](https://www.sciencedirect.com/science/article/pii/S0924271622003240) ([arXiv version](https://arxiv.org/abs/2205.15903))
 ```bash
 @article{MARSOCCI2023325,
 title = {Inferring 3D change detection from bitemporal optical images},
